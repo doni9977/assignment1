@@ -1,10 +1,9 @@
 package models;
 
 public class teacher extends person {
-    String subject;
-    public int yearsOfExperience;
-    int salary;
-
+    private String subject;
+    private int yearsOfExperience;
+    private int salary;
 
     public teacher(String name, String surname, int age, boolean gender, String subject, int yearsOfExperience, int salary) {
         super(name, surname, age, gender);
@@ -13,15 +12,23 @@ public class teacher extends person {
         this.salary = salary;
     }
 
+    public String getSubject() {
+        return subject;
+    }
+
+    public int getYearsOfExperience() {
+        return yearsOfExperience;
+    }
+
+    public int getSalary() {
+        return salary;
+    }
 
     public void giveRaise(double percentage) {
         if (percentage > 0) {
-            this.salary += (int) (this.salary * percentage / 100);
-        } else {
-            System.out.println("Raise percentage must be positive.");
+            this.salary += (int) (this.salary *(percentage/100));
         }
     }
-
 
     @Override
     public String toString() {

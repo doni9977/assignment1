@@ -1,72 +1,76 @@
 import models.*;
 
-import java.io.BufferedReader;
-import java.io.FileReader;
-import java.io.IOException;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 
 public class Main {
-    public static void main(String[] args) {
-
+    public static void main(String[] args) throws FileNotFoundException {
         School school = new School();
 
+        File studentsFile = new File("src/students.txt");
+        Scanner studentScanner = new Scanner(studentsFile);
 
-        try {
+        while (studentScanner.hasNextLine()) {
+            String name = studentScanner.next();
+            String surname = studentScanner.next();
+            int age = studentScanner.nextInt();
+            boolean gender = studentScanner.next().equalsIgnoreCase("Female");
+            String gradesLine = studentScanner.nextLine().trim();
 
-            BufferedReader studentReader = new BufferedReader(new FileReader("src/students.txt"));
-            String line;
-            while ((line = studentReader.readLine()) != null) {
-                String[] data = line.split(" ");
-                String name = data[0];
-                String surname = data[1];
-                int age = Integer.parseInt(data[2]);
-                boolean gender = Boolean.parseBoolean(data[3]);
+            student student = new student(name, surname, age, gender);
 
-
-                student student = new student(name, surname, age, gender);
-
-
-                for (int i = 4; i < data.length; i++) {
-                    student.addGrade(Integer.parseInt(data[i]));
+            if (!gradesLine.isEmpty()) {
+                String[] grades = gradesLine.split(" ");
+                for (String grade : grades) {
+                    student.addGrade(Integer.parseInt(grade));
                 }
-
-
-                school.addMember(student);
             }
-            studentReader.close();
-
-
-            BufferedReader teacherReader = new BufferedReader(new FileReader("src/teachers.txt"));
-            while ((line = teacherReader.readLine()) != null) {
-                String[] data = line.split(" ");
-                String name = data[0];
-                String surname = data[1];
-                int age = Integer.parseInt(data[2]);
-                boolean gender =data[3].equalsIgnoreCase("Male");
-                String subject = data[4];
-                int yearsOfExperience = Integer.parseInt(data[5]);
-                int salary = Integer.parseInt(data[6]);
-
-
-                teacher teacher = new teacher(name, surname, age, gender, subject, yearsOfExperience, salary);
-
-
-                if (teacher.yearsOfExperience > 10) {
-                    teacher.giveRaise(10);
-                }
-
-
-                school.addMember(teacher);
-            }
-            teacherReader.close();
-
-        } catch (IOException e) {
-            System.out.println( e.getMessage());
+            school.addMember(student);
         }
+        studentScanner.close();
 
+        File teachersFile = new File("src/teachers.txt");
+        Scanner teacherScanner = new Scanner(teachersFile);
+
+        while (teacherScanner.hasNextLine()) {
+            String name = teacherScanner.next();
+            String surname = teacherScanner.next();
+            int age = teacherScanner.nextInt();
+            boolean gender = teacherScanner.next().equalsIgnoreCase("Female");
+            String subject = teacherScanner.next();
+            int yearsOfExperience = teacherScanner.nextInt();
+            int salary = teacherScanner.nextInt();
+
+            teacher teacher = new teacher(name, surname, age, gender, subject, yearsOfExperience, salary);
+
+            if (yearsOfExperience > 10) {
+                teacher.giveRaise(10);
+            }
+
+            school.addMember(teacher);
+        }
+        teacherScanner.close();
 
         school.sortMembersBySurname();
 
+        System.out.println("School Members:");
+        System.out.println(school);
 
-        System.out.println(school.toString());
+        System.out.println("GPA of students:");
+        for (person member : school.members) {
+            if (member instanceof student) {
+                student student = (student) member;
+                System.out.printf("%s's GPA: %.2f%n", student.getName(), student.calculateGPA());
+            }
+        }
+
+        System.out.println("\nSalaries of teachers after potential raises:");
+        for (person member : school.members) {
+            if (member instanceof teacher) {
+                teacher teacher = (teacher) member;
+                System.out.printf("%s's salary: %d%n", teacher.getName(), teacher.getSalary());
+            }
+        }
     }
 }

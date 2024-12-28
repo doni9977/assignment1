@@ -1,11 +1,10 @@
 package models;
 
 public class person {
-    String name;
-    String surname;
-    int age;
-    boolean gender;
-
+    private String name;
+    private String surname;
+    private int age;
+    private boolean gender;
 
     public person(String name, String surname, int age, boolean gender) {
         this.name = name;
@@ -14,10 +13,28 @@ public class person {
         this.gender = gender;
     }
 
+    public String getName() {
+        return name;
+    }
+
+    public String getSurname() {
+        return surname;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public boolean isFemale() {
+        return gender;
+    }
+
+    public String getGenderAsString() {
+        return gender ? "Female" : "Male";
+    }
 
     @Override
     public String toString() {
-        String genderString = gender ? "Male" : "Female";
-        return "Hi, I am " + name + " " + surname + ", a " + age + "-year-old " + genderString + ".";
+        return "Hi, I am " + name + " " + surname + ", a " + age + "-year-old " + getGenderAsString();
     }
 }
